@@ -25,8 +25,14 @@ export default function SurveyPage() {
 
   // Form State
   const [q1Rank, setQ1Rank] = useState<string[]>(INITIAL_SAMPLES);
+  const [qLikeA, setQLikeA] = useState("");
+  const [qLikeB, setQLikeB] = useState("");
+  const [qLikeC, setQLikeC] = useState("");
   const [q2Buy, setQ2Buy] = useState("");
   const [q3SweetRank, setQ3SweetRank] = useState<string[]>(INITIAL_SAMPLES);
+  const [qSweetA, setQSweetA] = useState("");
+  const [qSweetB, setQSweetB] = useState("");
+  const [qSweetC, setQSweetC] = useState("");
   const [q4Intensity, setQ4Intensity] = useState("");
   const [q5Texture, setQ5Texture] = useState("");
   const [q6Balance, setQ6Balance] = useState("");
@@ -85,7 +91,7 @@ export default function SurveyPage() {
   const canProceed = () => {
     switch (step) {
       case 1:
-        return q2Buy && q4Intensity && q5Texture && q6Balance && q7Influence;
+        return q2Buy && q4Intensity && q5Texture && q6Balance && q7Influence && qLikeA && qLikeB && qLikeC && qSweetA && qSweetB && qSweetC;
       case 2:
         return q9Feeling && q10LikedMost && q11Sweetness && q12CoffeeInt && q13BalanceX;
       case 3:
@@ -122,8 +128,14 @@ export default function SurveyPage() {
       startedAt,
       submittedAt: new Date().toISOString(),
       q1Rank: q1Rank.join(", "),
+      gustoGeneral_A: qLikeA,
+      gustoGeneral_B: qLikeB,
+      gustoGeneral_C: qLikeC,
       q2Buy,
       q3SweetRank: q3SweetRank.join(", "),
+      dulzorAdecuado_A: qSweetA,
+      dulzorAdecuado_B: qSweetB,
+      dulzorAdecuado_C: qSweetC,
       q4Intensity,
       q5Texture,
       q6Balance,
@@ -307,6 +319,27 @@ export default function SurveyPage() {
                   <SortableList items={q1Rank} onChange={setQ1Rank} />
                 </QuestionBlock>
 
+                <QuestionBlock title="1.1. En una escala del 1 al 5, ¿qué tanto te gustó cada muestra?">
+                  <div className="space-y-6">
+                    <div className="flex flex-col gap-3">
+                      <span className="font-bold text-brand-primary">Muestra A</span>
+                      <Scale1To5 value={qLikeA} onChange={setQLikeA} />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <span className="font-bold text-brand-primary">Muestra B</span>
+                      <Scale1To5 value={qLikeB} onChange={setQLikeB} />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <span className="font-bold text-brand-primary">Muestra C</span>
+                      <Scale1To5 value={qLikeC} onChange={setQLikeC} />
+                    </div>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-400 mt-4 px-1 font-medium">
+                    <span>1 = Nada</span>
+                    <span>5 = Mucho</span>
+                  </div>
+                </QuestionBlock>
+
                 <QuestionBlock title="2. ¿Cuál comprarías si tuvieras que elegir una?">
                   {INITIAL_SAMPLES.map((s) => (
                     <RadioOption key={s} label={`Muestra ${s}`} selected={q2Buy === s} onClick={() => setQ2Buy(s)} />
@@ -315,6 +348,27 @@ export default function SurveyPage() {
 
                 <QuestionBlock title="3. Ordena las muestras según qué tanto te gustó su nivel de dulzor (1 = Más me gustó)">
                   <SortableList items={q3SweetRank} onChange={setQ3SweetRank} />
+                </QuestionBlock>
+
+                <QuestionBlock title="3.1. En una escala del 1 al 5, ¿qué tan adecuado te pareció el dulzor de cada muestra?">
+                  <div className="space-y-6">
+                    <div className="flex flex-col gap-3">
+                      <span className="font-bold text-brand-primary">Muestra A</span>
+                      <Scale1To5 value={qSweetA} onChange={setQSweetA} />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <span className="font-bold text-brand-primary">Muestra B</span>
+                      <Scale1To5 value={qSweetB} onChange={setQSweetB} />
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <span className="font-bold text-brand-primary">Muestra C</span>
+                      <Scale1To5 value={qSweetC} onChange={setQSweetC} />
+                    </div>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-400 mt-4 px-1 font-medium">
+                    <span>1 = Nada adecuado</span>
+                    <span>5 = Muy adecuado</span>
+                  </div>
                 </QuestionBlock>
 
                 <QuestionBlock title="4. ¿Cuál tenía la intensidad de café que más te gustó?">
