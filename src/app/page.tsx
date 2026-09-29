@@ -299,7 +299,7 @@ export default function SurveyPage() {
             transition={{ duration: 0.3 }}
           >
             {/* --- STEP 1 --- */}
-            {step === 1 && (
+            {true && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-black text-gray-900 mb-6">Cata a Ciegas</h2>
                 
@@ -353,7 +353,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 2 --- */}
-            {step === 2 && (
+            {true && (
               <div className="space-y-6">
                 <div className="bg-brand-primary text-white p-6 rounded-2xl mb-8 shadow-md">
                   <h2 className="text-xl font-bold mb-3">Revelación de Muestra</h2>
@@ -402,7 +402,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 3 --- */}
-            {step === 3 && (
+            {true && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-black text-gray-900 mb-6">Experiencia con Xiembra</h2>
 
@@ -443,7 +443,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 4 --- */}
-            {step === 4 && (
+            {true && (
               <div className="space-y-6">
                 <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
                   <p className="text-brand-primary">
@@ -472,7 +472,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 5 --- */}
-            {step === 5 && (
+            {true && (
               <div className="space-y-6">
                  <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
                   <p className="text-brand-primary">
@@ -515,7 +515,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 6 --- */}
-            {step === 6 && (
+            {true && (
               <div className="space-y-6">
                 <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
                   <p className="text-brand-primary">
@@ -550,7 +550,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 7 --- */}
-            {step === 7 && (
+            {true && (
               <div className="space-y-6">
                  <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
                   <p className="text-brand-primary">
@@ -579,7 +579,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 8 --- */}
-            {step === 8 && (
+            {true && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-black text-gray-900 mb-6">Lo que viene</h2>
 
@@ -608,7 +608,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 9 --- */}
-            {step === 9 && (
+            {true && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-black text-gray-900 mb-6">Datos de contacto (Opcional)</h2>
 
@@ -663,7 +663,7 @@ export default function SurveyPage() {
             )}
 
             {/* --- STEP 10 --- */}
-            {step === 10 && (
+            {true && (
               <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6">
                 <div className="w-48 h-48 rounded-full flex items-center justify-center mb-4 overflow-hidden border-4 border-brand-secondary/50">
                   <img src="/pacarana.jpg" alt="Pacarana" className="w-full h-full object-cover" />
@@ -729,3 +729,4 @@ export default function SurveyPage() {
     </div>
   );
 }
+
