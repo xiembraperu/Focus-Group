@@ -2,15 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { SortableList } from "@/components/SortableList";
-import { ChevronRight, Check } from "lucide-react";
+import { ChevronRight, Check, AlertCircle, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const XIEMBRA_SAMPLE_CODE = "517";
-const INITIAL_SAMPLES = ["382", "517", "904"];
+const XIEMBRA_SAMPLE_CODE = "B";
+const INITIAL_SAMPLES = ["A", "B", "C"];
 
 export default function SurveyPage() {
   const [step, setStep] = useState(1);
   const totalSteps = 10;
+
+  // Tracking State
+  const [participantId, setParticipantId] = useState("");
+  const [startedAt, setStartedAt] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  useEffect(() => {
+    setParticipantId(crypto.randomUUID());
+    setStartedAt(new Date().toISOString());
+  }, []);
 
   // Form State
   const [q1Rank, setQ1Rank] = useState<string[]>(INITIAL_SAMPLES);
@@ -90,7 +101,7 @@ export default function SurveyPage() {
       case 8:
         return q35CoffeeTake && q36CoffeeInfl && q37CoffeeBuy;
       case 9:
-        return true; // Optional fields
+        return true; 
       default:
         return true;
     }
@@ -99,6 +110,78 @@ export default function SurveyPage() {
   const handleNext = () => {
     if (canProceed() && step < totalSteps) {
       setStep(step + 1);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmitError("");
+    
+    const payload = {
+      participantId,
+      startedAt,
+      submittedAt: new Date().toISOString(),
+      q1Rank: q1Rank.join(", "),
+      q2Buy,
+      q3SweetRank: q3SweetRank.join(", "),
+      q4Intensity,
+      q5Texture,
+      q6Balance,
+      q7Influence,
+      q8Why,
+      q9Feeling,
+      q10LikedMost,
+      q11Sweetness,
+      q12CoffeeInt,
+      q13BalanceX,
+      q14FlavorDesc,
+      q15FirstAttention,
+      q16Understand,
+      q17Remember: q17Remember.join(", "),
+      q18Clarity,
+      q19Animal,
+      q20Transmit: q20Transmit.join(", "),
+      q21ChangePercep,
+      q22Price20,
+      q23Price20Exp,
+      q24Price100,
+      q25Price100Exp,
+      q26ProbBuy,
+      q27Motivation: q27Motivation.join(", "),
+      q28Impediment,
+      q29Moments: q29Moments.join(", "),
+      q30Places: q30Places.join(", "),
+      q31Describe: q31Describe.join(", "),
+      q32Improve: q32Improve.join(", "),
+      q33RememberEnd: q33RememberEnd.join(", "),
+      q34FlavorRank: q34FlavorRank.join(", "),
+      q35CoffeeTake,
+      q36CoffeeInfl,
+      q37CoffeeBuy,
+      contactName,
+      contactInfo,
+      contactOptIn
+    };
+
+    try {
+      const endpoint = process.env.NEXT_PUBLIC_SHEET_ENDPOINT;
+      if (!endpoint) {
+        throw new Error("No hay un endpoint configurado para enviar los datos.");
+      }
+      
+      await fetch(endpoint, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+      });
+      
+      setStep(10);
+    } catch (error: any) {
+      console.error("Submit Error:", error);
+      setSubmitError(error.message || "Ocurrió un error al enviar el formulario.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -115,12 +198,12 @@ export default function SurveyPage() {
     <button
       onClick={onClick}
       className={`w-full p-4 mb-3 rounded-xl border-2 text-left transition-all ${
-        selected ? "border-emerald-600 bg-emerald-50" : "border-gray-200 bg-white hover:border-emerald-200"
+        selected ? "border-brand-primary bg-brand-secondary/30" : "border-brand-secondary bg-white hover:border-brand-primary/50"
       }`}
     >
       <div className="flex items-center justify-between">
-        <span className={`font-medium ${selected ? "text-emerald-800" : "text-gray-700"}`}>{label}</span>
-        {selected && <Check className="text-emerald-600 w-5 h-5" />}
+        <span className={`font-medium ${selected ? "text-brand-primary" : "text-gray-700"}`}>{label}</span>
+        {selected && <Check className="text-brand-primary w-5 h-5" />}
       </div>
     </button>
   );
@@ -129,20 +212,20 @@ export default function SurveyPage() {
     <button
       onClick={onClick}
       className={`w-full p-4 mb-3 rounded-xl border-2 text-left transition-all ${
-        selected ? "border-emerald-600 bg-emerald-50" : "border-gray-200 bg-white hover:border-emerald-200"
+        selected ? "border-brand-primary bg-brand-secondary/30" : "border-brand-secondary bg-white hover:border-brand-primary/50"
       }`}
     >
       <div className="flex items-center justify-between">
-        <span className={`font-medium ${selected ? "text-emerald-800" : "text-gray-700"}`}>{label}</span>
-        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center ${selected ? "border-emerald-600 bg-emerald-600" : "border-gray-300"}`}>
-          {selected && <Check className="text-white w-4 h-4" />}
+        <span className={`font-medium ${selected ? "text-brand-primary" : "text-gray-700"}`}>{label}</span>
+        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center ${selected ? "border-brand-primary bg-brand-primary" : "border-gray-300"}`}>
+          {selected && <Check className="text-brand-bg w-4 h-4" />}
         </div>
       </div>
     </button>
   );
 
   const QuestionBlock = ({ title, children, optional = false }: { title: string; children: React.ReactNode, optional?: boolean }) => (
-    <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-brand-secondary">
       <h3 className="text-lg font-bold text-gray-800 mb-4">{title} {optional && <span className="text-sm font-normal text-gray-400">(Opcional)</span>}</h3>
       {children}
     </div>
@@ -156,7 +239,7 @@ export default function SurveyPage() {
             key={num}
             onClick={() => onChange(num.toString())}
             className={`w-12 h-12 rounded-full font-bold text-lg flex items-center justify-center transition-all ${
-              value === num.toString() ? "bg-emerald-600 text-white shadow-md scale-110" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              value === num.toString() ? "bg-brand-primary text-brand-bg shadow-md scale-110" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
             {num}
@@ -167,21 +250,28 @@ export default function SurveyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 font-sans selection:bg-emerald-200 selection:text-emerald-900">
+    <div className="min-h-screen pb-24 selection:bg-brand-secondary selection:text-brand-primary">
       {/* Progress Bar */}
       {step < 10 && (
-        <div className="fixed top-0 left-0 right-0 h-2 bg-gray-200 z-50">
+        <div className="fixed top-0 left-0 right-0 h-2 bg-brand-secondary/30 z-50">
           <div
-            className="h-full bg-emerald-500 transition-all duration-500 ease-out"
+            className="h-full bg-brand-secondary transition-all duration-500 ease-out"
             style={{ width: `${(step / 9) * 100}%` }}
           />
         </div>
       )}
 
-      <main className="max-w-md mx-auto px-4 pt-8">
+      {/* Header Container con color solido para ocultar el corte del logo JPG */}
+      <div className="bg-brand-bg w-full pt-8 pb-4 sticky top-0 z-40 border-b border-brand-secondary/30 shadow-sm">
+        <div className="max-w-md mx-auto px-4 flex justify-center">
+          <img src="/logo.jpg" alt="Xiembra Logo" className="h-16 w-auto object-contain rounded-xl" />
+        </div>
+      </div>
+
+      <main className="max-w-md mx-auto px-4 pt-6">
         {step < 10 && (
           <div className="mb-6">
-            <span className="text-sm font-semibold text-emerald-600 tracking-wider uppercase">Paso {step} de 9</span>
+            <span className="text-sm font-semibold text-brand-primary tracking-wider uppercase">Paso {step} de 9</span>
           </div>
         )}
 
@@ -238,7 +328,7 @@ export default function SurveyPage() {
 
                 <QuestionBlock title="8. ¿Por qué elegiste esa muestra como tu favorita?" optional>
                   <textarea
-                    className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-0 resize-none h-28"
+                    className="w-full p-4 rounded-xl border-2 border-brand-secondary focus:border-brand-primary focus:ring-0 resize-none h-28"
                     placeholder="Escribe tu respuesta aquí..."
                     value={q8Why}
                     onChange={(e) => setQ8Why(e.target.value)}
@@ -250,13 +340,13 @@ export default function SurveyPage() {
             {/* --- STEP 2 --- */}
             {step === 2 && (
               <div className="space-y-6">
-                <div className="bg-emerald-900 text-white p-6 rounded-2xl mb-8">
+                <div className="bg-brand-primary text-white p-6 rounded-2xl mb-8 shadow-md">
                   <h2 className="text-xl font-bold mb-3">Revelación de Muestra</h2>
-                  <p className="text-emerald-50 leading-relaxed">
+                  <p className="text-brand-bg leading-relaxed">
                     Ahora que hemos probado las muestras, queremos conocer tu percepción de Xiembra: su sabor, propuesta, identidad y lo que te transmite como marca.
                   </p>
-                  <div className="mt-4 bg-emerald-800 p-4 rounded-xl border border-emerald-700/50">
-                    <p className="text-lg font-medium text-center">La muestra <span className="font-black text-emerald-300 text-2xl mx-1">{XIEMBRA_SAMPLE_CODE}</span> era Xiembra.</p>
+                  <div className="mt-4 bg-brand-primary/80 p-4 rounded-xl border border-brand-secondary/50">
+                    <p className="text-lg font-medium text-center">La muestra <span className="font-black text-brand-accent text-2xl mx-1">{XIEMBRA_SAMPLE_CODE}</span> era Xiembra.</p>
                   </div>
                 </div>
 
@@ -303,7 +393,7 @@ export default function SurveyPage() {
 
                 <QuestionBlock title="1. ¿Cómo describirías el sabor de Xiembra con tus propias palabras?" optional>
                   <textarea
-                    className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 resize-none h-28"
+                    className="w-full p-4 rounded-xl border-2 border-brand-secondary focus:border-brand-primary resize-none h-28"
                     value={q14FlavorDesc}
                     onChange={(e) => setQ14FlavorDesc(e.target.value)}
                   />
@@ -340,8 +430,8 @@ export default function SurveyPage() {
             {/* --- STEP 4 --- */}
             {step === 4 && (
               <div className="space-y-6">
-                <div className="bg-emerald-50 border-l-4 border-emerald-500 p-5 rounded-r-xl mb-8">
-                  <p className="text-emerald-900">
+                <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
+                  <p className="text-brand-primary">
                     Exploraremos qué te transmite la Pacarana y cómo percibes la conexión de Xiembra con la Selva Central, el cacao y el café.
                   </p>
                 </div>
@@ -369,8 +459,8 @@ export default function SurveyPage() {
             {/* --- STEP 5 --- */}
             {step === 5 && (
               <div className="space-y-6">
-                 <div className="bg-emerald-50 border-l-4 border-emerald-500 p-5 rounded-r-xl mb-8">
-                  <p className="text-emerald-900">
+                 <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
+                  <p className="text-brand-primary">
                     Queremos conocer cuánto valor percibes en Xiembra y qué precio considerarías razonable, caro o económico para sus diferentes presentaciones.
                   </p>
                 </div>
@@ -412,8 +502,8 @@ export default function SurveyPage() {
             {/* --- STEP 6 --- */}
             {step === 6 && (
               <div className="space-y-6">
-                <div className="bg-emerald-50 border-l-4 border-emerald-500 p-5 rounded-r-xl mb-8">
-                  <p className="text-emerald-900">
+                <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
+                  <p className="text-brand-primary">
                     Queremos entender en qué momentos consumirías Xiembra, con qué lo acompañarías y en qué lugares esperarías encontrarlo.
                   </p>
                 </div>
@@ -447,8 +537,8 @@ export default function SurveyPage() {
             {/* --- STEP 7 --- */}
             {step === 7 && (
               <div className="space-y-6">
-                 <div className="bg-emerald-50 border-l-4 border-emerald-500 p-5 rounded-r-xl mb-8">
-                  <p className="text-emerald-900">
+                 <div className="bg-brand-secondary/30 border-l-4 border-brand-primary p-5 rounded-r-xl mb-8">
+                  <p className="text-brand-primary">
                     Queremos conocer qué impresión te llevas de Xiembra, qué recordarías y qué consideras que podría mejorar.
                   </p>
                 </div>
@@ -513,7 +603,7 @@ export default function SurveyPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                       <input
                         type="text"
-                        className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500"
+                        className="w-full p-4 rounded-xl border-2 border-brand-secondary focus:border-brand-primary"
                         placeholder="Ej: Juan Pérez"
                         value={contactName}
                         onChange={(e) => setContactName(e.target.value)}
@@ -523,7 +613,7 @@ export default function SurveyPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp o Correo</label>
                       <input
                         type="text"
-                        className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500"
+                        className="w-full p-4 rounded-xl border-2 border-brand-secondary focus:border-brand-primary"
                         placeholder="Ej: +51 999 999 999 / correo@ejemplo.com"
                         value={contactInfo}
                         onChange={(e) => setContactInfo(e.target.value)}
@@ -534,8 +624,8 @@ export default function SurveyPage() {
                       onClick={() => setContactOptIn(!contactOptIn)}
                       className="flex items-start gap-3 mt-4 text-left"
                     >
-                      <div className={`mt-0.5 shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${contactOptIn ? "border-emerald-600 bg-emerald-600" : "border-gray-300"}`}>
-                        {contactOptIn && <Check className="text-white w-4 h-4" />}
+                      <div className={`mt-0.5 shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${contactOptIn ? "border-brand-primary bg-brand-primary" : "border-gray-300"}`}>
+                        {contactOptIn && <Check className="text-brand-bg w-4 h-4" />}
                       </div>
                       <div>
                         <span className="text-gray-700 font-medium">Acepto que Xiembra me contacte sobre futuros lanzamientos</span>
@@ -544,15 +634,24 @@ export default function SurveyPage() {
                     </button>
                   </div>
                 </QuestionBlock>
+
+                {submitError && (
+                  <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl flex items-start gap-3">
+                    <AlertCircle className="text-red-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-red-800 font-medium">Error al enviar</p>
+                      <p className="text-red-600 text-sm mt-1">{submitError}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {/* --- STEP 10 --- */}
             {step === 10 && (
               <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-6">
-                <div className="w-48 h-48 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
-                  {/* Pacarana placeholder - can be replaced with actual image */}
-                  <span className="text-6xl">🤎☕</span>
+                <div className="w-48 h-48 rounded-full flex items-center justify-center mb-4 overflow-hidden border-4 border-brand-secondary/50">
+                  <img src="/pacarana.jpg" alt="Pacarana" className="w-full h-full object-cover" />
                 </div>
                 <h1 className="text-3xl font-black text-gray-900">¡Gracias por ser parte de esto!</h1>
                 <p className="text-gray-500 max-w-xs mx-auto">
@@ -566,12 +665,13 @@ export default function SurveyPage() {
 
       {/* Floating Bottom Nav */}
       {step < 10 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-gray-200">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-brand-secondary/30">
           <div className="max-w-md mx-auto flex justify-between items-center">
             {step > 1 ? (
               <button
                 onClick={() => setStep(step - 1)}
                 className="px-6 py-3 text-gray-500 font-medium rounded-xl active:bg-gray-100"
+                disabled={isSubmitting}
               >
                 Atrás
               </button>
@@ -579,17 +679,35 @@ export default function SurveyPage() {
               <div />
             )}
             
-            <button
-              onClick={handleNext}
-              disabled={!canProceed()}
-              className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all ${
-                canProceed()
-                  ? "bg-emerald-600 text-white shadow-lg shadow-emerald-200 active:scale-95"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Siguiente <ChevronRight className="w-5 h-5" />
-            </button>
+            {step === 9 ? (
+              <button
+                onClick={handleSubmit}
+                disabled={!canProceed() || isSubmitting}
+                className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all w-full max-w-[200px] ${
+                  canProceed() && !isSubmitting
+                    ? "bg-brand-primary text-brand-bg shadow-lg shadow-brand-secondary active:scale-95"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                {isSubmitting ? (
+                  <> <RefreshCw className="w-5 h-5 animate-spin" /> Enviando... </>
+                ) : (
+                  <> Enviar <Check className="w-5 h-5" /> </>
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={handleNext}
+                disabled={!canProceed()}
+                className={`flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold transition-all w-full max-w-[160px] ${
+                  canProceed()
+                    ? "bg-brand-primary text-brand-bg shadow-lg shadow-brand-secondary active:scale-95"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Siguiente <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
       )}

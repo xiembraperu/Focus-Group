@@ -41,7 +41,7 @@ function SortableItem(props: SortableItemProps) {
       ref={setNodeRef}
       style={style}
       className={`flex items-center gap-3 p-4 mb-2 bg-white rounded-xl shadow-sm border-2 ${
-        isDragging ? "border-emerald-500 shadow-md" : "border-gray-100"
+        isDragging ? "border-brand-primary shadow-md" : "border-gray-100"
       }`}
     >
       <div className="flex flex-col items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold shrink-0">
@@ -94,3 +94,4 @@ export function SortableList({ items, onChange }: SortableListProps) {
     </DndContext>
   );
 }
+
