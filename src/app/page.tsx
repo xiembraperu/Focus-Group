@@ -261,18 +261,18 @@ export default function SurveyPage() {
         </div>
       )}
 
-      {/* Header Container flotante para dejar ver la textura */}
-      <div className="w-full pt-8 pb-6 sticky top-0 z-40 bg-brand-bg/60 backdrop-blur-md border-b border-brand-secondary/30 shadow-sm">
+      {/* Header Container integrado (sin sticky ni blur) para una superficie continua */}
+      <div className="w-full pt-10 pb-2">
         <div className="max-w-md mx-auto px-4 flex justify-center">
           <img 
             src="/logo_verde_campo.jpg" 
             alt="Xiembra Logo" 
-            className="w-48 sm:w-56 md:w-64 h-auto object-contain rounded-3xl shadow-lg border-2 border-brand-secondary/30" 
+            className="w-56 sm:w-64 md:w-72 h-auto object-contain rounded-3xl shadow-lg border-2 border-brand-secondary/30" 
           />
         </div>
       </div>
 
-      <main className="max-w-md mx-auto px-4 pt-8">
+      <main className="max-w-md mx-auto px-4 pt-4">
         {step < 10 && (
           <div className="mb-6">
             <span className="text-sm font-semibold text-brand-primary tracking-wider uppercase">Paso {step} de 9</span>
