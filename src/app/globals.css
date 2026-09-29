@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Sacramento&display=swap');
 @import "tailwindcss";
 
 @font-face {
@@ -19,6 +20,7 @@
 @theme {
   --font-sans: 'Sequel Sans', var(--font-geist-sans), sans-serif;
   --font-serif: 'Forrest', serif;
+  --font-script: 'Sacramento', cursive;
   
   --color-brand-primary: #006148;
   --color-brand-secondary: #CBEC8A;
@@ -44,3 +46,4 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
 }
+

@@ -225,7 +225,7 @@ export default function SurveyPage() {
   );
 
   const QuestionBlock = ({ title, children, optional = false }: { title: string; children: React.ReactNode, optional?: boolean }) => (
-    <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-brand-secondary">
+    <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-brand-secondary transition-all duration-300 focus-within:border-brand-primary focus-within:shadow-md focus-within:shadow-brand-secondary/50 focus-within:ring-1 focus-within:ring-brand-primary/20">
       <h3 className="text-lg font-bold text-gray-800 mb-4">{title} {optional && <span className="text-sm font-normal text-gray-400">(Opcional)</span>}</h3>
       {children}
     </div>
@@ -251,31 +251,42 @@ export default function SurveyPage() {
 
   return (
     <div className="min-h-screen pb-24 selection:bg-brand-secondary selection:text-brand-primary">
-      {/* Progress Bar */}
-      {step < 10 && (
-        <div className="fixed top-0 left-0 right-0 h-2 bg-brand-secondary/30 z-50">
-          <div
-            className="h-full bg-brand-secondary transition-all duration-500 ease-out"
-            style={{ width: `${(step / 9) * 100}%` }}
-          />
-        </div>
-      )}
+      {/* Header Container integrado con slogan y decoración SVG */}
+      <div className="relative w-full pt-12 pb-4 overflow-hidden">
+        {/* Hojas sutiles SVG - Esquina superior izquierda */}
+        <svg className="absolute top-2 left-2 w-20 h-20 text-brand-secondary opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
 
-      {/* Header Container integrado (sin sticky ni blur) para una superficie continua */}
-      <div className="w-full pt-10 pb-2">
-        <div className="max-w-md mx-auto px-4 flex justify-center">
+        {/* Hojas sutiles SVG - Esquina inferior derecha */}
+        <svg className="absolute bottom-2 right-2 w-20 h-20 text-brand-secondary opacity-40 transform rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+
+        <div className="max-w-md mx-auto px-4 flex flex-col items-center justify-center relative z-10">
           <img 
             src="/logo_verde_campo.jpg" 
             alt="Xiembra Logo" 
             className="w-56 sm:w-64 md:w-72 h-auto object-contain rounded-3xl shadow-lg border-2 border-brand-secondary/30" 
           />
+          <p className="font-script text-brand-primary text-3xl sm:text-4xl mt-5 -rotate-2 drop-shadow-sm">Hijos de la Tierra</p>
         </div>
       </div>
 
-      <main className="max-w-md mx-auto px-4 pt-4">
+      <main className="max-w-md mx-auto px-4 pt-6">
         {step < 10 && (
-          <div className="mb-6">
-            <span className="text-sm font-semibold text-brand-primary tracking-wider uppercase">Paso {step} de 9</span>
+          <div className="mb-10">
+            <div className="flex justify-between items-end mb-2">
+              <span className="font-script text-2xl sm:text-3xl text-brand-primary">Paso {step} de 10</span>
+            </div>
+            <div className="w-full h-1.5 bg-brand-secondary/30 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-brand-secondary transition-all duration-500 ease-out rounded-full" 
+                style={{ width: `${(step / 10) * 100}%` }}
+              />
+            </div>
           </div>
         )}
 

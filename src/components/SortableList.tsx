@@ -41,15 +41,15 @@ function SortableItem(props: SortableItemProps) {
       ref={setNodeRef}
       style={style}
       className={`flex items-center gap-3 p-4 mb-2 bg-white rounded-xl shadow-sm border-2 ${
-        isDragging ? "border-brand-primary shadow-md" : "border-gray-100"
+        isDragging ? "border-brand-primary shadow-md" : "border-brand-secondary/30"
       }`}
     >
-      <div className="flex flex-col items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold shrink-0">
+      <div className="flex flex-col items-center justify-center w-8 h-8 rounded-full bg-brand-accent text-brand-primary font-bold shrink-0">
         {props.index + 1}
       </div>
       <div className="flex-1 text-lg font-medium text-gray-700">{props.label}</div>
       <div {...attributes} {...listeners} className="touch-none cursor-grab active:cursor-grabbing p-2">
-        <GripVertical className="text-gray-400" />
+        <GripVertical className="text-brand-primary/50" />
       </div>
     </div>
   );
@@ -94,4 +94,5 @@ export function SortableList({ items, onChange }: SortableListProps) {
     </DndContext>
   );
 }
+
 
