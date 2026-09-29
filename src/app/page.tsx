@@ -271,7 +271,7 @@ export default function SurveyPage() {
             alt="Xiembra Logo" 
             className="w-56 sm:w-64 md:w-72 h-auto object-contain rounded-3xl shadow-lg border-2 border-brand-secondary/30" 
           />
-          <p className="font-script text-brand-primary text-3xl sm:text-4xl mt-5 -rotate-2 drop-shadow-sm">Hijos de la Tierra</p>
+          <p className="font-serif text-brand-primary text-xl sm:text-2xl mt-4 font-bold tracking-wide">Hijos de la Tierra</p>
         </div>
       </div>
 
@@ -729,6 +729,7 @@ export default function SurveyPage() {
     </div>
   );
 }
+
 
 
 

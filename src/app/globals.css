@@ -3,7 +3,7 @@
 @theme {
   --font-sans: var(--font-sequel-sans), var(--font-geist-sans), sans-serif;
   --font-serif: var(--font-forrest), serif;
-  --font-script: var(--font-sacramento), cursive;
+  
   
   --color-brand-primary: #006148;
   --color-brand-secondary: #CBEC8A;
@@ -29,3 +29,4 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
 }
+
