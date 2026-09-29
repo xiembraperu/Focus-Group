@@ -1,5 +1,26 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
+import { Sacramento } from "next/font/google";
 import "./globals.css";
+
+const forrest = localFont({
+  src: "../fonts/forrest-bold.otf",
+  variable: "--font-forrest",
+  display: "swap",
+});
+
+const sequelSans = localFont({
+  src: "../fonts/sequel-sans.ttf",
+  variable: "--font-sequel-sans",
+  display: "swap",
+});
+
+const sacramento = Sacramento({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-sacramento",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Xiembra | Focus Group",
@@ -11,9 +32,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="es" className={`${forrest.variable} ${sequelSans.variable} ${sacramento.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
 }
-

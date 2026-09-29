@@ -226,7 +226,7 @@ export default function SurveyPage() {
 
   const QuestionBlock = ({ title, children, optional = false }: { title: string; children: React.ReactNode, optional?: boolean }) => (
     <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-brand-secondary transition-all duration-300 focus-within:border-brand-primary focus-within:shadow-md focus-within:shadow-brand-secondary/50 focus-within:ring-1 focus-within:ring-brand-primary/20">
-      <h3 className="text-lg font-bold text-gray-800 mb-4">{title} {optional && <span className="text-sm font-normal text-gray-400">(Opcional)</span>}</h3>
+      <h3 className="font-serif text-xl font-bold text-gray-800 mb-4">{title} {optional && <span className="text-sm font-normal text-gray-400">(Opcional)</span>}</h3>
       {children}
     </div>
   );
@@ -279,7 +279,7 @@ export default function SurveyPage() {
         {step < 10 && (
           <div className="mb-10">
             <div className="flex justify-between items-end mb-2">
-              <span className="font-script text-2xl sm:text-3xl text-brand-primary">Paso {step} de 10</span>
+              <span className="font-sans font-bold text-sm tracking-wider uppercase text-brand-primary">Paso {step} de 10</span>
             </div>
             <div className="w-full h-1.5 bg-brand-secondary/30 rounded-full overflow-hidden">
               <div 
@@ -301,7 +301,7 @@ export default function SurveyPage() {
             {/* --- STEP 1 --- */}
             {true && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-black text-gray-900 mb-6">Cata a Ciegas</h2>
+                <h2 className="font-serif text-3xl font-black text-brand-primary mb-6">Cata a Ciegas</h2>
                 
                 <QuestionBlock title="1. Ordena las muestras de tu favorita a tu menos favorita (1 = Favorita)">
                   <SortableList items={q1Rank} onChange={setQ1Rank} />
@@ -404,7 +404,7 @@ export default function SurveyPage() {
             {/* --- STEP 3 --- */}
             {true && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-black text-gray-900 mb-6">Experiencia con Xiembra</h2>
+                <h2 className="font-serif text-3xl font-black text-brand-primary mb-6">Experiencia con Xiembra</h2>
 
                 <QuestionBlock title="1. ¿Cómo describirías el sabor de Xiembra con tus propias palabras?" optional>
                   <textarea
@@ -581,7 +581,7 @@ export default function SurveyPage() {
             {/* --- STEP 8 --- */}
             {true && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-black text-gray-900 mb-6">Lo que viene</h2>
+                <h2 className="font-serif text-3xl font-black text-brand-primary mb-6">Lo que viene</h2>
 
                 <QuestionBlock title="1. Si Xiembra desarrollara estos nuevos sabores, ¿en qué orden te gustaría probarlos? (1 = El que más quieres)">
                   <SortableList items={q34FlavorRank} onChange={setQ34FlavorRank} />
@@ -610,7 +610,7 @@ export default function SurveyPage() {
             {/* --- STEP 9 --- */}
             {true && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-black text-gray-900 mb-6">Datos de contacto (Opcional)</h2>
+                <h2 className="font-serif text-3xl font-black text-brand-primary mb-6">Datos de contacto (Opcional)</h2>
 
                 <QuestionBlock title="Queremos seguir en contacto contigo">
                   <div className="space-y-4">
@@ -668,7 +668,7 @@ export default function SurveyPage() {
                 <div className="w-48 h-48 rounded-full flex items-center justify-center mb-4 overflow-hidden border-4 border-brand-secondary/50">
                   <img src="/pacarana.jpg" alt="Pacarana" className="w-full h-full object-cover" />
                 </div>
-                <h1 className="text-3xl font-black text-gray-900">¡Gracias por ser parte de esto!</h1>
+                <h1 className="font-serif text-4xl font-black text-brand-primary mb-4">¡Gracias por ser parte de esto!</h1>
                 <p className="text-gray-500 max-w-xs mx-auto">
                   Tu opinión nos ayuda a mejorar y llevar el mejor sabor de la Selva Central a más personas.
                 </p>
@@ -729,4 +729,6 @@ export default function SurveyPage() {
     </div>
   );
 }
+
+
 

@@ -1,26 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Sacramento&display=swap');
 @import "tailwindcss";
 
-@font-face {
-  font-family: 'Forrest';
-  src: url('/fonts/forrest-bold.otf') format('opentype');
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Sequel Sans';
-  src: url('/fonts/sequel-sans.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
-  --font-sans: 'Sequel Sans', var(--font-geist-sans), sans-serif;
-  --font-serif: 'Forrest', serif;
-  --font-script: 'Sacramento', cursive;
+  --font-sans: var(--font-sequel-sans), var(--font-geist-sans), sans-serif;
+  --font-serif: var(--font-forrest), serif;
+  --font-script: var(--font-sacramento), cursive;
   
   --color-brand-primary: #006148;
   --color-brand-secondary: #CBEC8A;
@@ -46,4 +29,3 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
 }
-
