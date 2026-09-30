@@ -8,6 +8,64 @@ import { motion, AnimatePresence } from "framer-motion";
 const XIEMBRA_SAMPLE_CODE = "B";
 const INITIAL_SAMPLES = ["A", "B", "C"];
 
+// UI Components
+const RadioOption = ({ selected, onClick, label }: { selected: boolean; onClick: () => void; label: string }) => (
+  <button
+    onClick={onClick}
+    className={`w-full p-4 mb-3 rounded-xl border-2 text-left transition-all ${
+      selected ? "border-brand-primary bg-brand-secondary/30" : "border-brand-secondary bg-white hover:border-brand-primary/50"
+    }`}
+  >
+    <div className="flex items-center justify-between">
+      <span className={`font-medium ${selected ? "text-brand-primary" : "text-gray-700"}`}>{label}</span>
+      {selected && <Check className="text-brand-primary w-5 h-5" />}
+    </div>
+  </button>
+);
+
+const CheckboxOption = ({ selected, onClick, label, disabled = false }: { selected: boolean; onClick: () => void; label: string; disabled?: boolean }) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={`w-full p-4 mb-3 rounded-xl border-2 text-left transition-all ${
+      disabled && !selected ? "opacity-50 cursor-not-allowed border-gray-200 bg-gray-50" : selected ? "border-brand-primary bg-brand-secondary/30" : "border-brand-secondary bg-white hover:border-brand-primary/50"
+    }`}
+  >
+    <div className="flex items-center justify-between">
+      <span className={`font-medium ${selected ? "text-brand-primary" : "text-gray-700"}`}>{label}</span>
+      <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center ${selected ? "border-brand-primary bg-brand-primary" : "border-gray-300"}`}>
+        {selected && <Check className="text-brand-bg w-4 h-4" />}
+      </div>
+    </div>
+  </button>
+);
+
+const QuestionBlock = ({ title, children, optional = false }: { title: string; children: React.ReactNode, optional?: boolean }) => (
+  <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-brand-secondary transition-all duration-300 focus-within:border-brand-primary focus-within:shadow-md focus-within:shadow-brand-secondary/50 focus-within:ring-1 focus-within:ring-brand-primary/20">
+    <h3 className="font-serif text-xl font-bold text-gray-800 mb-4">{title} {optional && <span className="text-sm font-normal text-gray-400">(Opcional)</span>}</h3>
+    {children}
+  </div>
+);
+
+const Scale1To5 = ({ value, onChange }: { value: string, onChange: (v: string) => void }) => {
+  return (
+    <div className="flex justify-between items-center gap-2">
+      {[1, 2, 3, 4, 5].map((num) => (
+        <button
+          key={num}
+          onClick={() => onChange(num.toString())}
+          className={`w-12 h-12 rounded-full font-bold text-lg flex items-center justify-center transition-all ${
+            value === num.toString() ? "bg-brand-primary text-brand-bg shadow-md scale-110" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+          }`}
+        >
+          {num}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+
 export default function SurveyPage() {
   const [step, setStep] = useState(1);
   const totalSteps = 10;
@@ -203,62 +261,6 @@ export default function SurveyPage() {
     } else {
       setState([...state, value]);
     }
-  };
-
-  // UI Components
-  const RadioOption = ({ selected, onClick, label }: { selected: boolean; onClick: () => void; label: string }) => (
-    <button
-      onClick={onClick}
-      className={`w-full p-4 mb-3 rounded-xl border-2 text-left transition-all ${
-        selected ? "border-brand-primary bg-brand-secondary/30" : "border-brand-secondary bg-white hover:border-brand-primary/50"
-      }`}
-    >
-      <div className="flex items-center justify-between">
-        <span className={`font-medium ${selected ? "text-brand-primary" : "text-gray-700"}`}>{label}</span>
-        {selected && <Check className="text-brand-primary w-5 h-5" />}
-      </div>
-    </button>
-  );
-
-  const CheckboxOption = ({ selected, onClick, label }: { selected: boolean; onClick: () => void; label: string }) => (
-    <button
-      onClick={onClick}
-      className={`w-full p-4 mb-3 rounded-xl border-2 text-left transition-all ${
-        selected ? "border-brand-primary bg-brand-secondary/30" : "border-brand-secondary bg-white hover:border-brand-primary/50"
-      }`}
-    >
-      <div className="flex items-center justify-between">
-        <span className={`font-medium ${selected ? "text-brand-primary" : "text-gray-700"}`}>{label}</span>
-        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center ${selected ? "border-brand-primary bg-brand-primary" : "border-gray-300"}`}>
-          {selected && <Check className="text-brand-bg w-4 h-4" />}
-        </div>
-      </div>
-    </button>
-  );
-
-  const QuestionBlock = ({ title, children, optional = false }: { title: string; children: React.ReactNode, optional?: boolean }) => (
-    <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-brand-secondary transition-all duration-300 focus-within:border-brand-primary focus-within:shadow-md focus-within:shadow-brand-secondary/50 focus-within:ring-1 focus-within:ring-brand-primary/20">
-      <h3 className="font-serif text-xl font-bold text-gray-800 mb-4">{title} {optional && <span className="text-sm font-normal text-gray-400">(Opcional)</span>}</h3>
-      {children}
-    </div>
-  );
-
-  const Scale1To5 = ({ value, onChange }: { value: string, onChange: (v: string) => void }) => {
-    return (
-      <div className="flex justify-between items-center gap-2">
-        {[1, 2, 3, 4, 5].map((num) => (
-          <button
-            key={num}
-            onClick={() => onChange(num.toString())}
-            className={`w-12 h-12 rounded-full font-bold text-lg flex items-center justify-center transition-all ${
-              value === num.toString() ? "bg-brand-primary text-brand-bg shadow-md scale-110" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {num}
-          </button>
-        ))}
-      </div>
-    );
   };
 
   return (
