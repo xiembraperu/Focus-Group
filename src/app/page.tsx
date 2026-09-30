@@ -23,6 +23,71 @@ const RadioOption = ({ selected, onClick, label }: { selected: boolean; onClick:
   </button>
 );
 
+
+const OptionsList = ({ 
+  options, 
+  selected, 
+  onChange, 
+  type = "checkbox", 
+  maxSelections, 
+  otroText, 
+  onOtroTextChange 
+}: { 
+  options: string[], 
+  selected: string | string[], 
+  onChange: (val: any) => void, 
+  type?: "radio" | "checkbox", 
+  maxSelections?: number,
+  otroText?: string,
+  onOtroTextChange?: (val: string) => void 
+}) => {
+  const isMulti = type === "checkbox";
+  const selectedArray = isMulti ? (selected as string[]) : [selected as string];
+  const hasOtro = selectedArray.includes("Otro");
+  const isMaxReached = isMulti && maxSelections && selectedArray.length >= maxSelections;
+
+  const handleToggle = (opt: string) => {
+    if (isMulti) {
+      if (selectedArray.includes(opt)) {
+        if (opt === "Otro" && onOtroTextChange) onOtroTextChange("");
+        onChange(selectedArray.filter((v: string) => v !== opt));
+      } else if (!isMaxReached) {
+        onChange([...selectedArray, opt]);
+      }
+    } else {
+      if (selected !== opt) {
+        if (selected === "Otro" && onOtroTextChange) onOtroTextChange("");
+        onChange(opt);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      {options.map((opt) => {
+        const isSelected = selectedArray.includes(opt);
+        const isDisabled = isMulti && isMaxReached && !isSelected;
+        
+        if (type === "radio") {
+          return <RadioOption key={opt} label={opt} selected={isSelected} onClick={() => handleToggle(opt)} />;
+        } else {
+          return <CheckboxOption key={opt} label={opt} selected={isSelected} disabled={isDisabled} onClick={() => handleToggle(opt)} />;
+        }
+      })}
+      {hasOtro && onOtroTextChange && (
+        <input 
+          type="text" 
+          placeholder="Especificar..." 
+          className="w-full p-4 mt-2 rounded-xl border-2 border-brand-primary focus:border-brand-primary outline-none" 
+          value={otroText || ""} 
+          onChange={e => onOtroTextChange(e.target.value)} 
+          autoFocus
+        />
+      )}
+    </div>
+  );
+};
+
 const CheckboxOption = ({ selected, onClick, label, disabled = false }: { selected: boolean; onClick: () => void; label: string; disabled?: boolean }) => (
   <button
     onClick={onClick}
@@ -392,9 +457,7 @@ export default function SurveyPage() {
                 </QuestionBlock>
 
                 <QuestionBlock title="7. ¿Qué fue lo que más influyó en tu elección de la muestra favorita?">
-                  {["Sabor del chocolate", "Sabor del café", "Equilibrio entre chocolate y café", "Dulzor", "Intensidad del café", "Textura", "Aroma", "Sensación final"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q7Influence === opt} onClick={() => setQ7Influence(opt)} />
-                  ))}
+                  <OptionsList options={["Sabor del chocolate", "Sabor del café", "Equilibrio entre chocolate y café", "Dulzor", "Intensidad del café", "Textura", "Aroma", "Sensación final"]} selected={q7Influence} onChange={setQ7Influence} type="radio" />
                 </QuestionBlock>
 
                 <QuestionBlock title="8. ¿Por qué elegiste esa muestra como tu favorita?" optional>
@@ -422,37 +485,27 @@ export default function SurveyPage() {
                 </div>
 
                 <QuestionBlock title="1. Ahora que sabes cuál era Xiembra, ¿Cómo te sientes respecto a tu elección?">
-                  {["Me reafirma que elegiría Xiembra", "Me sorprendió que Xiembra fuera mi favorita", "Xiembra no fue mi favorita, pero me interesa conocerla más", "Mi opinión no cambia", "No estoy seguro/a"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q9Feeling === opt} onClick={() => setQ9Feeling(opt)} />
-                  ))}
+                  <OptionsList options={["Me reafirma que elegiría Xiembra", "Me sorprendió que Xiembra fuera mi favorita", "Xiembra no fue mi favorita, pero me interesa conocerla más", "Mi opinión no cambia", "No estoy seguro/a"]} selected={q9Feeling} onChange={setQ9Feeling} type="radio" />
                 </QuestionBlock>
 
                 <QuestionBlock title="2. Pensando específicamente en la muestra de Xiembra, ¿Qué fue lo que más te gustó?">
-                  {["Sabor del chocolate", "Sabor del café", "Equilibrio entre chocolate y café", "Dulzor", "Intensidad del café", "Aroma", "Textura", "Sensación final"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q10LikedMost === opt} onClick={() => setQ10LikedMost(opt)} />
-                  ))}
+                  <OptionsList options={["Sabor del chocolate", "Sabor del café", "Equilibrio entre chocolate y café", "Dulzor", "Intensidad del café", "Aroma", "Textura", "Sensación final"]} selected={q10LikedMost} onChange={setQ10LikedMost} type="radio" />
                 </QuestionBlock>
 
                 <QuestionBlock title="3. ¿Cómo percibiste el dulzor de Xiembra?">
                   <div className="flex flex-col gap-2">
-                    {["Muy bajo", "Bajo", "Adecuado", "Alto", "Muy Alto"].map((opt) => (
-                      <RadioOption key={opt} label={opt} selected={q11Sweetness === opt} onClick={() => setQ11Sweetness(opt)} />
-                    ))}
+                    <OptionsList options={["Muy bajo", "Bajo", "Adecuado", "Alto", "Muy Alto"]} selected={q11Sweetness} onChange={setQ11Sweetness} type="radio" />
                   </div>
                 </QuestionBlock>
 
                 <QuestionBlock title="4. ¿Cómo percibiste la intensidad del café de Xiembra?">
                   <div className="flex flex-col gap-2">
-                    {["Muy baja", "Baja", "Adecuada", "Alta", "Muy Alta"].map((opt) => (
-                      <RadioOption key={opt} label={opt} selected={q12CoffeeInt === opt} onClick={() => setQ12CoffeeInt(opt)} />
-                    ))}
+                    <OptionsList options={["Muy baja", "Baja", "Adecuada", "Alta", "Muy Alta"]} selected={q12CoffeeInt} onChange={setQ12CoffeeInt} type="radio" />
                   </div>
                 </QuestionBlock>
 
                 <QuestionBlock title="5. ¿Cómo percibiste el equilibrio entre el chocolate y el café?">
-                  {["Predomina mucho el chocolate", "Predomina un poco el chocolate", "Está equilibrado", "Predomina un poco el café", "Predomina mucho el café"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q13BalanceX === opt} onClick={() => setQ13BalanceX(opt)} />
-                  ))}
+                  <OptionsList options={["Predomina mucho el chocolate", "Predomina un poco el chocolate", "Está equilibrado", "Predomina un poco el café", "Predomina mucho el café"]} selected={q13BalanceX} onChange={setQ13BalanceX} type="radio" />
                 </QuestionBlock>
               </div>
             )}
@@ -471,21 +524,15 @@ export default function SurveyPage() {
                 </QuestionBlock>
 
                 <QuestionBlock title="2. Al ver el empaque de Xiembra por primera vez, ¿qué fue lo primero que llamó tu atención?">
-                  {["Nombre / logo Xiembra", "Pacarana", "Imagen de las grajeas", "Chocolate / cacao", "Café", "Colores", "Texto principal", "Presentación / formato", "Otro"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q15FirstAttention === opt} onClick={() => setQ15FirstAttention(opt)} />
-                  ))}
+                  <OptionsList options={["Nombre / logo Xiembra", "Pacarana", "Imagen de las grajeas", "Chocolate / cacao", "Café", "Colores", "Texto principal", "Presentación / formato", "Otro"]} selected={q15FirstAttention} onChange={setQ15FirstAttention} type="radio" otroText={otros.q15FirstAttentionOtro || ""} onOtroTextChange={(val) => handleOtroChange("q15FirstAttentionOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="3. Sin que nadie te explique el producto, ¿qué entiendes que es?">
-                  {["Chocolate", "Chocolate con café", "Grajeas de chocolate", "Grajeas de café cubiertas de chocolate", "Snack de café", "Confitería", "No me queda claro", "Otro"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q16Understand === opt} onClick={() => setQ16Understand(opt)} />
-                  ))}
+                  <OptionsList options={["Chocolate", "Chocolate con café", "Grajeas de chocolate", "Grajeas de café cubiertas de chocolate", "Snack de café", "Confitería", "No me queda claro", "Otro"]} selected={q16Understand} onChange={setQ16Understand} type="radio" otroText={otros.q16UnderstandOtro || ""} onOtroTextChange={(val) => handleOtroChange("q16UnderstandOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="4. ¿Qué información recuerdas del empaque después de observarlo? (Puedes elegir varias)">
-                  {["Xiembra", "Choco Grajeas de Café Tostado", "Cacao", "Café", "Selva Central", "Porcentaje de cacao", "Contenido neto", "Pacarana"].map((opt) => (
-                    <CheckboxOption key={opt} label={opt} selected={q17Remember.includes(opt)} onClick={() => toggleMultiSelect(q17Remember, setQ17Remember, opt)} />
-                  ))}
+                  <OptionsList options={["Xiembra", "Choco Grajeas de Café Tostado", "Cacao", "Café", "Selva Central", "Porcentaje de cacao", "Contenido neto", "Pacarana"]} selected={q17Remember} onChange={setQ17Remember} type="checkbox" />
                 </QuestionBlock>
 
                 <QuestionBlock title="5. ¿Qué tan claro te resulta qué producto estás comprando? (1 = Nada claro, 5 = Muy claro)">
@@ -508,21 +555,15 @@ export default function SurveyPage() {
                 </div>
 
                 <QuestionBlock title="1. Antes de conocer la historia, ¿Qué animal pensabas que era el personaje?">
-                  {["Ratón", "Cuy", "Capibara", "No lo identifico", "Otro"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q19Animal === opt} onClick={() => setQ19Animal(opt)} />
-                  ))}
+                  <OptionsList options={["Ratón", "Cuy", "Capibara", "No lo identifico", "Otro"]} selected={q19Animal} onChange={setQ19Animal} type="radio" otroText={otros.q19AnimalOtro || ""} onOtroTextChange={(val) => handleOtroChange("q19AnimalOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="2. ¿Qué te transmite el personaje? (Puedes elegir varias)">
-                  {["Selva", "Naturaleza", "Algo artesanal", "Algo amigable", "Algo infantil", "Algo premium", "No me transmite algo específico", "Otro"].map((opt) => (
-                    <CheckboxOption key={opt} label={opt} selected={q20Transmit.includes(opt)} onClick={() => toggleMultiSelect(q20Transmit, setQ20Transmit, opt)} />
-                  ))}
+                  <OptionsList options={["Selva", "Naturaleza", "Algo artesanal", "Algo amigable", "Algo infantil", "Algo premium", "No me transmite algo específico", "Otro"]} selected={q20Transmit} onChange={setQ20Transmit} type="checkbox" otroText={otros.q20TransmitOtro || ""} onOtroTextChange={(val) => handleOtroChange("q20TransmitOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="3. Ahora que conoces que es una Pacarana de la Selva Central, ¿cambia tu percepción de Xiembra?">
-                  {["Mejora mi percepción", "No cambia", "Empeora mi percepción", "No estoy seguro/a"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q21ChangePercep === opt} onClick={() => setQ21ChangePercep(opt)} />
-                  ))}
+                  <OptionsList options={["Mejora mi percepción", "No cambia", "Empeora mi percepción", "No estoy seguro/a"]} selected={q21ChangePercep} onChange={setQ21ChangePercep} type="radio" />
                 </QuestionBlock>
               </div>
             )}
@@ -536,28 +577,20 @@ export default function SurveyPage() {
                   </p>
                 </div>
 
-                <QuestionBlock title="1. Pensando en la presentación de 20 g, ¿qué precio considerarías razonable?">
-                  {["S/ 3–4", "S/ 5–6", "S/ 7–8", "S/ 9–10", "Más de S/ 10", "No sé"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q22Price20 === opt} onClick={() => setQ22Price20(opt)} />
-                  ))}
+                <QuestionBlock title="1. Pensando en la bolsita de 20 g, ¿qué precio considerarías razonable?">
+                  <OptionsList options={["S/ 3–4", "S/ 5–6", "S/ 7–8", "S/ 9–10", "Más de S/ 10", "No sé"]} selected={q22Price20} onChange={setQ22Price20} type="radio" />
                 </QuestionBlock>
 
-                <QuestionBlock title="2. ¿A partir de qué precio considerarías cara la presentación de 20 g?">
-                  {["S/ 5", "S/ 6", "S/ 7", "S/ 8", "S/ 9", "S/ 10", "No sé"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q23Price20Exp === opt} onClick={() => setQ23Price20Exp(opt)} />
-                  ))}
+                <QuestionBlock title="2. ¿A partir de qué precio considerarías cara la bolsita de 20 g?">
+                  <OptionsList options={["S/ 5", "S/ 6", "S/ 7", "S/ 8", "S/ 9", "S/ 10", "No sé"]} selected={q23Price20Exp} onChange={setQ23Price20Exp} type="radio" />
                 </QuestionBlock>
 
-                <QuestionBlock title="3. Pensando en la presentación de 100 g, ¿qué precio considerarías razonable?">
-                  {["S/ 15–19", "S/ 20–24", "S/ 25–29", "S/ 30–34", "S/ 35–39", "No sé"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q24Price100 === opt} onClick={() => setQ24Price100(opt)} />
-                  ))}
+                <QuestionBlock title="3. Pensando en la caja de 100 g, ¿qué precio considerarías razonable?">
+                  <OptionsList options={["S/ 15–19", "S/ 20–24", "S/ 25–29", "S/ 30–34", "S/ 35–39", "No sé"]} selected={q24Price100} onChange={setQ24Price100} type="radio" />
                 </QuestionBlock>
 
-                <QuestionBlock title="4. ¿A partir de qué precio considerarías cara la presentación de 100 g?">
-                  {["S/ 20", "S/ 25", "S/ 30", "S/ 35", "S/ 40 a más", "No sé"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q25Price100Exp === opt} onClick={() => setQ25Price100Exp(opt)} />
-                  ))}
+                <QuestionBlock title="4. ¿A partir de qué precio considerarías cara la caja de 100 g?">
+                  <OptionsList options={["S/ 20", "S/ 25", "S/ 30", "S/ 35", "S/ 40 a más", "No sé"]} selected={q25Price100Exp} onChange={setQ25Price100Exp} type="radio" />
                 </QuestionBlock>
 
                 <QuestionBlock title="5. Después de probar Xiembra y conocer la marca, ¿Qué tan probable sería que la compraras? (1 = Nada probable, 5 = Muy probable)">
@@ -580,27 +613,19 @@ export default function SurveyPage() {
                 </div>
 
                 <QuestionBlock title="1. ¿Qué sería lo que más te motivaría a comprar Xiembra? (Puedes elegir varias)">
-                  {["La calidad de los ingredientes", "La historia de la marca", "La presentación", "El precio", "El cacao", "El café", "Encontrarlo en una cafetería o tienda que frecuento", "Otro"].map((opt) => (
-                    <CheckboxOption key={opt} label={opt} selected={q27Motivation.includes(opt)} onClick={() => toggleMultiSelect(q27Motivation, setQ27Motivation, opt)} />
-                  ))}
+                  <OptionsList options={["La calidad de los ingredientes", "La historia de la marca", "La presentación", "El precio", "El cacao", "El café", "Encontrarlo en una cafetería o tienda que frecuento", "Otro"]} selected={q27Motivation} onChange={setQ27Motivation} type="checkbox" maxSelections={3} otroText={otros.q27MotivationOtro || ""} onOtroTextChange={(val) => handleOtroChange("q27MotivationOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="2. ¿Qué podría impedirte comprar Xiembra?">
-                  {["Precio", "Sabor", "No conocer la marca", "No encontrarlo fácilmente", "Presentación / tamaño", "Empaque", "Otro"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q28Impediment === opt} onClick={() => setQ28Impediment(opt)} />
-                  ))}
+                  <OptionsList options={["Precio", "Sabor", "No conocer la marca", "No encontrarlo fácilmente", "Presentación / tamaño", "Empaque", "Otro"]} selected={q28Impediment} onChange={setQ28Impediment} type="checkbox" maxSelections={3} otroText={otros.q28ImpedimentOtro || ""} onOtroTextChange={(val) => handleOtroChange("q28ImpedimentOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="3. ¿En qué momentos consumirías Xiembra? (Puedes elegir varias)">
-                  {["Acompañando un café", "Como snack", "Durante el trabajo/estudio", "Después de comer", "En una reunión", "Como regalo", "Para tener en casa", "Otro"].map((opt) => (
-                    <CheckboxOption key={opt} label={opt} selected={q29Moments.includes(opt)} onClick={() => toggleMultiSelect(q29Moments, setQ29Moments, opt)} />
-                  ))}
+                  <OptionsList options={["Acompañando un café", "Como snack", "Durante el trabajo/estudio", "Después de comer", "En una reunión", "Como regalo", "Para tener en casa", "Otro"]} selected={q29Moments} onChange={setQ29Moments} type="checkbox" otroText={otros.q29MomentsOtro || ""} onOtroTextChange={(val) => handleOtroChange("q29MomentsOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="4. ¿Dónde esperarías encontrar Xiembra? (Puedes elegir varias)">
-                  {["Cafeterías", "Tiendas de productos naturales", "Supermercados", "Ferias", "Tiendas online", "Redes sociales", "Otro"].map((opt) => (
-                    <CheckboxOption key={opt} label={opt} selected={q30Places.includes(opt)} onClick={() => toggleMultiSelect(q30Places, setQ30Places, opt)} />
-                  ))}
+                  <OptionsList options={["Cafeterías", "Tiendas de productos naturales", "Supermercados", "Ferias", "Tiendas online", "Redes sociales", "Otro"]} selected={q30Places} onChange={setQ30Places} type="checkbox" otroText={otros.q30PlacesOtro || ""} onOtroTextChange={(val) => handleOtroChange("q30PlacesOtro", val)} />
                 </QuestionBlock>
               </div>
             )}
@@ -615,21 +640,15 @@ export default function SurveyPage() {
                 </div>
 
                 <QuestionBlock title="1. Después de esta experiencia, ¿Cuáles de estas palabras describen mejor a Xiembra? (Puedes elegir varias)">
-                  {["Natural", "Peruano", "Artesanal", "Premium", "Sofisticada", "Diferente", "Cercana", "Amigable", "Saludable", "Gourmet", "Infantil", "Juvenil", "No me genera una percepción clara", "Otro"].map((opt) => (
-                    <CheckboxOption key={opt} label={opt} selected={q31Describe.includes(opt)} onClick={() => toggleMultiSelect(q31Describe, setQ31Describe, opt)} />
-                  ))}
+                  <OptionsList options={["Natural", "Peruano / Artesanal", "Premium / Gourmet", "Diferente", "Cercana / Amigable", "Saludable", "Infantil / Juvenil", "No me genera una percepción clara", "Otro"]} selected={q31Describe} onChange={setQ31Describe} type="checkbox" maxSelections={3} otroText={otros.q31DescribeOtro || ""} onOtroTextChange={(val) => handleOtroChange("q31DescribeOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="2. ¿Qué sería lo primero que mejorarías de Xiembra? (Obligatoria)">
-                  {["El nivel de dulzor", "La intensidad del café", "El sabor del chocolate", "La textura", "El equilibrio chocolate–café", "El aroma", "El empaque", "La información del empaque", "El precio", "La historia / comunicación de la marca", "No cambiaría nada", "Otro"].map((opt) => (
-                    <CheckboxOption key={opt} label={opt} selected={q32Improve.includes(opt)} onClick={() => toggleMultiSelect(q32Improve, setQ32Improve, opt)} />
-                  ))}
+                  <OptionsList options={["La historia / comunicación de la marca", "El nivel de dulzor", "La intensidad del café", "El sabor del chocolate", "La textura", "El equilibrio chocolate–café", "El aroma", "El empaque", "La información del empaque", "El precio", "No cambiaría nada", "Otro"]} selected={q32Improve} onChange={setQ32Improve} type="checkbox" maxSelections={3} otroText={otros.q32ImproveOtro || ""} onOtroTextChange={(val) => handleOtroChange("q32ImproveOtro", val)} />
                 </QuestionBlock>
 
                 <QuestionBlock title="3. ¿Qué es lo que más recordarías de Xiembra después de esta experiencia? (Obligatoria)">
-                  {["La combinación de café y chocolate", "El empaque", "La marca Xiembra", "La Pacarana", "La historia / origen de la Selva Central", "La presentación del producto", "La experiencia de probarlo", "Otro"].map((opt) => (
-                     <CheckboxOption key={opt} label={opt} selected={q33RememberEnd.includes(opt)} onClick={() => toggleMultiSelect(q33RememberEnd, setQ33RememberEnd, opt)} />
-                  ))}
+                  <OptionsList options={["La combinación de café y chocolate", "El empaque", "La marca Xiembra", "La Pacarana", "La historia / origen de la Selva Central", "La presentación del producto", "La experiencia de probarlo", "Otro"]} selected={q33RememberEnd} onChange={setQ33RememberEnd} type="checkbox" maxSelections={3} otroText={otros.q33RememberEndOtro || ""} onOtroTextChange={(val) => handleOtroChange("q33RememberEndOtro", val)} />
                 </QuestionBlock>
               </div>
             )}
@@ -644,21 +663,15 @@ export default function SurveyPage() {
                 </QuestionBlock>
 
                 <QuestionBlock title="2. De los dos cafés que probaste, ¿cuál elegirías para tomar?">
-                  {["Café A", "Café B"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q35CoffeeTake === opt} onClick={() => setQ35CoffeeTake(opt)} />
-                  ))}
+                  <OptionsList options={["Café A", "Café B"]} selected={q35CoffeeTake} onChange={setQ35CoffeeTake} type="radio" />
                 </QuestionBlock>
 
                 <QuestionBlock title="3. ¿Qué fue lo que más influyó en tu elección?">
-                  {["Aroma", "Sabor", "Acidez", "Suavidad", "Cuerpo", "Sabor final"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q36CoffeeInfl === opt} onClick={() => setQ36CoffeeInfl(opt)} />
-                  ))}
+                  <OptionsList options={["Aroma", "Sabor y acidez", "Cuerpo y suavidad"]} selected={q36CoffeeInfl} onChange={setQ36CoffeeInfl} type="radio" />
                 </QuestionBlock>
 
                 <QuestionBlock title="4. Si tuvieras que elegir uno para comprar, ¿cuál elegirías?">
-                  {["Café A", "Café B"].map((opt) => (
-                    <RadioOption key={opt} label={opt} selected={q37CoffeeBuy === opt} onClick={() => setQ37CoffeeBuy(opt)} />
-                  ))}
+                  <OptionsList options={["Café A", "Café B"]} selected={q37CoffeeBuy} onChange={setQ37CoffeeBuy} type="radio" />
                 </QuestionBlock>
               </div>
             )}
@@ -785,6 +798,7 @@ export default function SurveyPage() {
     </div>
   );
 }
+
 
 
 
