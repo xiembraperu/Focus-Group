@@ -81,7 +81,7 @@ const OptionsList = ({
           className="w-full p-4 mt-2 rounded-xl border-2 border-brand-primary focus:border-brand-primary outline-none" 
           value={otroText || ""} 
           onChange={e => onOtroTextChange(e.target.value)} 
-          autoFocus
+          
         />
       )}
     </div>
